@@ -9,6 +9,7 @@ import {
   ContentAssetDocument,
 } from './schemas/content-asset.schema';
 import { QueueName } from '../shared/constants/queues.constant';
+import { ContentType } from '../shared/enums/content-type.enum';
 
 @Processor(QueueName.CONTENT_GENERATION)
 export class ContentGenerationProcessor extends WorkerHost {
@@ -27,7 +28,7 @@ export class ContentGenerationProcessor extends WorkerHost {
 
     const { brandId, type, brief } = job.data as {
       brandId: string;
-      type: string;
+      type: ContentType;
       brief: {
         topic: string;
         keywords: string[];
