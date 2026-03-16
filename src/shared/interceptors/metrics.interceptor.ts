@@ -29,11 +29,17 @@ export class MetricsInterceptor implements NestInterceptor {
     );
   }
 
-  private recordMetrics(request: Request, response: Response, startTime: number) {
+  private recordMetrics(
+    request: Request,
+    response: Response,
+    startTime: number,
+  ) {
     const duration = (Date.now() - startTime) / 1000;
     const labels = {
       method: request.method,
-      path: this.normalizePath(request.route?.path || request.url),
+      path: this.normalizePath(
+        (request.route as { path?: string } | undefined)?.path ?? request.url,
+      ),
       status_code: String(response.statusCode),
     };
 
@@ -43,9 +49,6 @@ export class MetricsInterceptor implements NestInterceptor {
 
   private normalizePath(path: string): string {
     // Replace dynamic path params with placeholders
-    return path.replace(
-      /[0-9a-fA-F]{24}/g,
-      ':id',
-    );
+    return path.replace(/[0-9a-fA-F]{24}/g, ':id');
   }
 }

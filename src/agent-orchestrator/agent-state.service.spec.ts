@@ -22,9 +22,9 @@ describe('AgentStateService', () => {
       currentStatus: AgentStatus.PENDING,
       transitions: [],
     }),
-    findOne: jest.fn().mockReturnValue(
-      Promise.resolve({ ...mockState, save: mockState.save }),
-    ),
+    findOne: jest
+      .fn()
+      .mockReturnValue(Promise.resolve({ ...mockState, save: mockState.save })),
   };
 
   beforeEach(async () => {

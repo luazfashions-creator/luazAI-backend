@@ -23,7 +23,14 @@ import aiConfig from './config/ai.config';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, databaseConfig, redisConfig, queueConfig, authConfig, aiConfig],
+      load: [
+        appConfig,
+        databaseConfig,
+        redisConfig,
+        queueConfig,
+        authConfig,
+        aiConfig,
+      ],
     }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],

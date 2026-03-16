@@ -25,11 +25,15 @@ export abstract class BaseAgent {
 
   abstract getTools(): string[];
 
-  async onStart(context: AgentExecutionContext): Promise<void> {
+  onStart(context: AgentExecutionContext): Promise<void> {
     this.logger.log(`Starting ${this.agentType} for brand ${context.brandId}`);
+    return Promise.resolve();
   }
 
-  async onComplete(context: AgentExecutionContext, result: AgentResult): Promise<void> {
+  async onComplete(
+    context: AgentExecutionContext,
+    result: AgentResult,
+  ): Promise<void> {
     this.logger.log(`${this.agentType} completed for brand ${context.brandId}`);
     await context.memory.saveLongTerm(context.taskId, result.data ?? {});
     await context.memory.clearShortTerm(context.taskId);

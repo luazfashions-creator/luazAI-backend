@@ -28,13 +28,17 @@ export class AppService {
     };
   }
 
-  async getReadiness(): Promise<{ status: string; services: Record<string, string> }> {
+  async getReadiness(): Promise<{
+    status: string;
+    services: Record<string, string>;
+  }> {
     const services: Record<string, string> = {};
 
     // Check MongoDB
     try {
       const mongoState = this.mongoConnection.readyState;
-      services.mongodb = mongoState === 1 ? 'connected' : 'disconnected';
+      services.mongodb =
+        mongoState === (1 as typeof mongoState) ? 'connected' : 'disconnected';
     } catch {
       services.mongodb = 'error';
     }

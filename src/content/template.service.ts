@@ -21,10 +21,19 @@ export class TemplateService {
       type: ContentType.BLOG_POST,
       name: 'Standard Blog Post',
       sections: [
-        { heading: 'Introduction', placeholder: 'Hook the reader with a compelling opening' },
-        { heading: 'Main Points', placeholder: 'Cover the core topic with subheadings' },
+        {
+          heading: 'Introduction',
+          placeholder: 'Hook the reader with a compelling opening',
+        },
+        {
+          heading: 'Main Points',
+          placeholder: 'Cover the core topic with subheadings',
+        },
         { heading: 'Actionable Tips', placeholder: 'Provide practical advice' },
-        { heading: 'Conclusion', placeholder: 'Summarize key takeaways with CTA' },
+        {
+          heading: 'Conclusion',
+          placeholder: 'Summarize key takeaways with CTA',
+        },
       ],
       defaultWordCount: 1500,
       defaultTone: 'informative',
@@ -33,8 +42,14 @@ export class TemplateService {
       type: ContentType.AD_COPY,
       name: 'Standard Ad Copy',
       sections: [
-        { heading: 'Headline', placeholder: 'Attention-grabbing headline (max 30 chars)' },
-        { heading: 'Description', placeholder: 'Value proposition (max 90 chars)' },
+        {
+          heading: 'Headline',
+          placeholder: 'Attention-grabbing headline (max 30 chars)',
+        },
+        {
+          heading: 'Description',
+          placeholder: 'Value proposition (max 90 chars)',
+        },
         { heading: 'CTA', placeholder: 'Clear call-to-action' },
       ],
       defaultWordCount: 100,
@@ -46,7 +61,10 @@ export class TemplateService {
       sections: [
         { heading: 'Hook', placeholder: 'Opening line to stop the scroll' },
         { heading: 'Body', placeholder: 'Key message or story' },
-        { heading: 'CTA + Hashtags', placeholder: 'Call-to-action and relevant hashtags' },
+        {
+          heading: 'CTA + Hashtags',
+          placeholder: 'Call-to-action and relevant hashtags',
+        },
       ],
       defaultWordCount: 200,
       defaultTone: 'engaging',

@@ -18,7 +18,10 @@ export class CompetitorAnalysisService {
     @InjectQueue(QueueName.SCRAPING) private readonly scrapingQueue: Queue,
   ) {}
 
-  async analyze(brandId: string, userId: string): Promise<{ jobIds: string[] }> {
+  async analyze(
+    brandId: string,
+    userId: string,
+  ): Promise<{ jobIds: string[] }> {
     const brand = await this.brandService.findOne(brandId, userId);
     const jobIds: string[] = [];
 

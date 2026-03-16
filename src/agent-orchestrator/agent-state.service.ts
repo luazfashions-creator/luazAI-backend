@@ -18,7 +18,10 @@ const VALID_TRANSITIONS: Record<AgentStatus, AgentStatus[]> = {
   [AgentStatus.FAILED]: [AgentStatus.QUEUED, AgentStatus.DEAD],
   [AgentStatus.DEAD]: [],
   [AgentStatus.WAITING_INPUT]: [AgentStatus.RUNNING, AgentStatus.CANCELLED],
-  [AgentStatus.WAITING_DEPENDENCY]: [AgentStatus.RUNNING, AgentStatus.CANCELLED],
+  [AgentStatus.WAITING_DEPENDENCY]: [
+    AgentStatus.RUNNING,
+    AgentStatus.CANCELLED,
+  ],
   [AgentStatus.CANCELLED]: [],
 };
 
@@ -64,7 +67,7 @@ export class AgentStateService {
       to: newStatus,
       timestamp: new Date(),
       reason,
-    } as any);
+    } as (typeof state.transitions)[number]);
 
     state.currentStatus = newStatus;
     return state.save();

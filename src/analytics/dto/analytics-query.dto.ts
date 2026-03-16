@@ -1,4 +1,4 @@
-import { IsMongoId, IsOptional, IsString, IsEnum } from 'class-validator';
+import { IsMongoId, IsOptional, IsString } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class AnalyticsQueryDto {

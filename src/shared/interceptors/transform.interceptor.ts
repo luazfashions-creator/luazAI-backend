@@ -13,32 +13,39 @@ export interface ApiResponse<T> {
 }
 
 @Injectable()
-export class TransformInterceptor<T>
-  implements NestInterceptor<T, ApiResponse<T>>
-{
+export class TransformInterceptor<T> implements NestInterceptor<
+  T,
+  ApiResponse<T>
+> {
   intercept(
     context: ExecutionContext,
     next: CallHandler,
   ): Observable<ApiResponse<T>> {
     return next.handle().pipe(
-      map((data) => {
+      map((data: unknown): ApiResponse<T> => {
         // If already wrapped, pass through
         if (data && typeof data === 'object' && 'success' in data) {
-          return data;
+          return data as ApiResponse<T>;
         }
 
         // Extract meta if present
-        if (data && typeof data === 'object' && 'data' in data && 'meta' in data) {
+        if (
+          data &&
+          typeof data === 'object' &&
+          'data' in data &&
+          'meta' in data
+        ) {
+          const wrapped = data as { data: T; meta: Record<string, unknown> };
           return {
             success: true,
-            data: data.data,
-            meta: data.meta,
+            data: wrapped.data,
+            meta: wrapped.meta,
           };
         }
 
         return {
           success: true,
-          data,
+          data: data as T,
         };
       }),
     );

@@ -54,10 +54,7 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Logout current session' })
-  async logout(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const token = this.extractToken(req);
     if (token) {
       await this.authService.logout(token);
@@ -125,6 +122,8 @@ export class AuthController {
     if (authHeader?.startsWith('Bearer ')) {
       return authHeader.substring(7);
     }
-    return req.cookies?.['session_token'];
+    return (req.cookies as Record<string, string> | undefined)?.[
+      'session_token'
+    ];
   }
 }

@@ -20,13 +20,13 @@ export class ContentAgent extends BaseAgent {
 
     const job = await this.contentService.enqueueGeneration({
       brandId,
-      type: input.contentType || ContentType.BLOG_POST,
+      type: (input.contentType as ContentType) || ContentType.BLOG_POST,
       brief: {
-        topic: input.topic,
-        keywords: input.keywords,
-        tone: input.tone,
-        wordCount: input.wordCount,
-        targetAudience: input.targetAudience,
+        topic: input.topic as string,
+        keywords: input.keywords as string[],
+        tone: input.tone as string,
+        wordCount: input.wordCount as number,
+        targetAudience: input.targetAudience as string,
       },
     });
 

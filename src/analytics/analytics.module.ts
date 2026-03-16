@@ -5,7 +5,10 @@ import { AnalyticsController } from './analytics.controller';
 import { EventTrackerService } from './event-tracker.service';
 import { ReportBuilderService } from './report-builder.service';
 import { AnalyticsPipelineProcessor } from './analytics-pipeline.processor';
-import { AnalyticsEvent, AnalyticsEventSchema } from './schemas/analytics-event.schema';
+import {
+  AnalyticsEvent,
+  AnalyticsEventSchema,
+} from './schemas/analytics-event.schema';
 import { QueueName } from '../shared/constants/queues.constant';
 
 @Module({

@@ -1,7 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { AnalyticsEvent, AnalyticsEventDocument } from './schemas/analytics-event.schema';
+import {
+  AnalyticsEvent,
+  AnalyticsEventDocument,
+} from './schemas/analytics-event.schema';
 
 @Injectable()
 export class ReportBuilderService {
@@ -38,11 +41,13 @@ export class ReportBuilderService {
       brandId,
       period,
       since,
-      metrics: results.map((r) => ({
-        eventType: r._id,
-        totalValue: r.totalValue,
-        count: r.count,
-      })),
+      metrics: results.map(
+        (r: { _id: string; totalValue: number; count: number }) => ({
+          eventType: r._id,
+          totalValue: r.totalValue,
+          count: r.count,
+        }),
+      ),
     };
   }
 

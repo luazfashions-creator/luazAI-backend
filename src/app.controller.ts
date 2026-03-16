@@ -20,7 +20,10 @@ export class AppController {
 
   @Get('health/ready')
   @ApiOperation({ summary: 'Readiness probe — checks MongoDB + Redis' })
-  async getReadiness(): Promise<{ status: string; services: Record<string, string> }> {
+  async getReadiness(): Promise<{
+    status: string;
+    services: Record<string, string>;
+  }> {
     return this.appService.getReadiness();
   }
 

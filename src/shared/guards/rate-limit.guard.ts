@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import Redis from 'ioredis';
 import { ConfigService } from '@nestjs/config';
+import { Request } from 'express';
 
 @Injectable()
 export class RateLimitGuard implements CanActivate {
@@ -22,13 +23,19 @@ export class RateLimitGuard implements CanActivate {
       maxRetriesPerRequest: 3,
       lazyConnect: true,
     });
-    this.maxAttempts = this.config.get<number>('auth.rateLimit.maxAttempts', 10);
-    this.windowSeconds = this.config.get<number>('auth.rateLimit.windowSeconds', 60);
+    this.maxAttempts = this.config.get<number>(
+      'auth.rateLimit.maxAttempts',
+      10,
+    );
+    this.windowSeconds = this.config.get<number>(
+      'auth.rateLimit.windowSeconds',
+      60,
+    );
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
-    const ip = request.ip || request.connection?.remoteAddress || 'unknown';
+    const request = context.switchToHttp().getRequest<Request>();
+    const ip = request.ip || request.socket?.remoteAddress || 'unknown';
     const key = `rate-limit:${ip}:${request.method}:${request.path}`;
 
     const current = await this.redis.incr(key);

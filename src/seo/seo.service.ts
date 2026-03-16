@@ -118,11 +118,14 @@ export class SeoService {
 
   async getContentGaps(brandId: string) {
     // Find keywords competitors rank for but brand has no content
-    const keywords = await this.keywordModel.find({
-      brandId: new Types.ObjectId(brandId),
-      currentRank: { $exists: false },
-      opportunityScore: { $gte: 50 },
-    }).sort({ opportunityScore: -1 }).limit(20);
+    const keywords = await this.keywordModel
+      .find({
+        brandId: new Types.ObjectId(brandId),
+        currentRank: { $exists: false },
+        opportunityScore: { $gte: 50 },
+      })
+      .sort({ opportunityScore: -1 })
+      .limit(20);
 
     return keywords.map((kw) => ({
       keyword: kw.keyword,

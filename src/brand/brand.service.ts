@@ -6,13 +6,14 @@ import {
   Logger,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Types } from 'mongoose';
 import Redis from 'ioredis';
 import { BrandRepository } from './brand.repository';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 import { generateSlug } from '../shared/utils/slug.util';
 import { PaginationDto } from '../shared/dto/pagination.dto';
-import { BrandDocument } from './schemas/brand.schema';
+import { Brand, BrandDocument } from './schemas/brand.schema';
 import { PaginatedResponse } from '../shared/interfaces/paginated-response.interface';
 
 const CACHE_PREFIX = 'cache:brand:';
@@ -47,12 +48,12 @@ export class BrandService {
     const brand = await this.brandRepo.create({
       name: dto.name,
       slug,
-      ownerId: userId as any,
+      ownerId: userId as unknown as Types.ObjectId,
       website: dto.website,
       industry: dto.industry,
       description: dto.description,
-      guidelines: dto.guidelines as any,
-      competitors: dto.competitors as any,
+      guidelines: dto.guidelines as unknown as Brand['guidelines'],
+      competitors: dto.competitors as unknown as Brand['competitors'],
     });
 
     this.logger.log(`Brand created: ${brand.name} (${brand.slug})`);
@@ -87,7 +88,7 @@ export class BrandService {
     // Check cache
     const cached = await this.redis.get(`${CACHE_PREFIX}${id}`);
     if (cached) {
-      return JSON.parse(cached);
+      return JSON.parse(cached) as BrandDocument;
     }
 
     const brand = await this.brandRepo.findById(id);
@@ -98,7 +99,11 @@ export class BrandService {
     this.checkOwnership(brand, userId);
 
     // Cache the result
-    await this.redis.setex(`${CACHE_PREFIX}${id}`, CACHE_TTL, JSON.stringify(brand));
+    await this.redis.setex(
+      `${CACHE_PREFIX}${id}`,
+      CACHE_TTL,
+      JSON.stringify(brand),
+    );
 
     return brand;
   }
@@ -106,7 +111,7 @@ export class BrandService {
   async findById(id: string): Promise<BrandDocument> {
     const cached = await this.redis.get(`${CACHE_PREFIX}${id}`);
     if (cached) {
-      return JSON.parse(cached);
+      return JSON.parse(cached) as BrandDocument;
     }
 
     const brand = await this.brandRepo.findById(id);
@@ -114,7 +119,11 @@ export class BrandService {
       throw new NotFoundException('Brand not found');
     }
 
-    await this.redis.setex(`${CACHE_PREFIX}${id}`, CACHE_TTL, JSON.stringify(brand));
+    await this.redis.setex(
+      `${CACHE_PREFIX}${id}`,
+      CACHE_TTL,
+      JSON.stringify(brand),
+    );
     return brand;
   }
 

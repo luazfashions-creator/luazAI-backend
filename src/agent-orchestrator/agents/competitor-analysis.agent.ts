@@ -4,9 +4,7 @@ import { CompetitorAnalysisService } from '../../seo/competitor-analysis.service
 
 @Injectable()
 export class CompetitorAnalysisAgent extends BaseAgent {
-  constructor(
-    private readonly competitorService: CompetitorAnalysisService,
-  ) {
+  constructor(private readonly competitorService: CompetitorAnalysisService) {
     super('competitor-analysis');
   }
 
@@ -16,7 +14,7 @@ export class CompetitorAnalysisAgent extends BaseAgent {
 
   async execute(context: AgentExecutionContext): Promise<AgentResult> {
     const { brandId } = context;
-    const userId = context.input.userId;
+    const userId = context.input.userId as string;
 
     await context.memory.setShortTerm(context.taskId, {
       phase: 'analyzing-competitors',

@@ -8,7 +8,12 @@ import {
   UseGuards,
   HttpStatus,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { EventTrackerService } from './event-tracker.service';
 import { ReportBuilderService } from './report-builder.service';
 import { TrackEventDto } from './dto/track-event.dto';
@@ -27,7 +32,11 @@ export class AnalyticsController {
   @Get('overview')
   @ApiOperation({ summary: 'Get analytics overview for a brand' })
   @ApiQuery({ name: 'brandId', required: true })
-  @ApiQuery({ name: 'period', required: false, enum: ['7d', '30d', '90d', '12m'] })
+  @ApiQuery({
+    name: 'period',
+    required: false,
+    enum: ['7d', '30d', '90d', '12m'],
+  })
   async getOverview(
     @Query('brandId') brandId: string,
     @Query('period') period: string = '30d',
@@ -80,7 +89,7 @@ export class AnalyticsController {
   @Get('visibility')
   @ApiOperation({ summary: 'Get search visibility (placeholder for Phase 2)' })
   @ApiQuery({ name: 'brandId', required: true })
-  async getVisibility(@Query('brandId') brandId: string) {
+  getVisibility(@Query('brandId') brandId: string) {
     return {
       brandId,
       message: 'Search visibility tracking — available in Phase 2',

@@ -36,10 +36,7 @@ export class BrandController {
   @Post()
   @Roles(Role.OWNER, Role.ADMIN)
   @ApiOperation({ summary: 'Create a new brand' })
-  async create(
-    @Body() dto: CreateBrandDto,
-    @CurrentUser('id') userId: string,
-  ) {
+  async create(@Body() dto: CreateBrandDto, @CurrentUser('id') userId: string) {
     return this.brandService.create(dto, userId);
   }
 
@@ -54,10 +51,7 @@ export class BrandController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get brand details' })
-  async findOne(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async findOne(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.brandService.findOne(id, userId);
   }
 
@@ -76,16 +70,15 @@ export class BrandController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Roles(Role.OWNER)
   @ApiOperation({ summary: 'Delete a brand' })
-  async delete(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async delete(@Param('id') id: string, @CurrentUser('id') userId: string) {
     await this.brandService.delete(id, userId);
   }
 
   @Post(':id/ingest')
   @Roles(Role.OWNER, Role.ADMIN)
-  @ApiOperation({ summary: 'Trigger brand knowledge ingestion via Brand Profiler agent' })
+  @ApiOperation({
+    summary: 'Trigger brand knowledge ingestion via Brand Profiler agent',
+  })
   async ingest(@Param('id') id: string) {
     const result = await this.workflowEngine.startWorkflow(
       {

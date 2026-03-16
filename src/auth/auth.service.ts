@@ -32,14 +32,17 @@ export class AuthService {
 
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
-    @InjectModel(Session.name) private readonly sessionModel: Model<SessionDocument>,
+    @InjectModel(Session.name)
+    private readonly sessionModel: Model<SessionDocument>,
     private readonly config: ConfigService,
   ) {
     this.sessionMaxAge = this.config.get<number>('auth.session.maxAge', 86400);
   }
 
   async register(dto: RegisterDto): Promise<{ user: AuthUser; token: string }> {
-    const existing = await this.userModel.findOne({ email: dto.email.toLowerCase() });
+    const existing = await this.userModel.findOne({
+      email: dto.email.toLowerCase(),
+    });
     if (existing) {
       throw new ConflictException('Email already registered');
     }
@@ -56,13 +59,20 @@ export class AuthService {
     this.logger.log(`User registered: ${user.email}`);
 
     return {
-      user: { id: user._id.toString(), name: user.name, email: user.email, role: user.role },
+      user: {
+        id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
       token,
     };
   }
 
   async login(dto: LoginDto): Promise<{ user: AuthUser; token: string }> {
-    const user = await this.userModel.findOne({ email: dto.email.toLowerCase() }).select('+password');
+    const user = await this.userModel
+      .findOne({ email: dto.email.toLowerCase() })
+      .select('+password');
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -77,7 +87,12 @@ export class AuthService {
     this.logger.log(`User logged in: ${user.email}`);
 
     return {
-      user: { id: user._id.toString(), name: user.name, email: user.email, role: user.role },
+      user: {
+        id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
       token,
     };
   }
@@ -93,7 +108,12 @@ export class AuthService {
     const user = await this.userModel.findById(session.userId);
     if (!user) return null;
 
-    return { id: user._id.toString(), name: user.name, email: user.email, role: user.role };
+    return {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    };
   }
 
   async refreshToken(oldToken: string): Promise<{ token: string }> {
@@ -127,11 +147,19 @@ export class AuthService {
     return { message: 'If an account exists, a reset email has been sent' };
   }
 
-  async resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
+  resetPassword(
+    token: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _newPassword: string,
+  ): Promise<{ message: string }> {
     // In production, validate the token against stored reset tokens
     // For now, this is a placeholder
-    this.logger.log(`Password reset requested with token: ${token.substring(0, 8)}...`);
-    throw new NotFoundException('Password reset flow not fully implemented yet');
+    this.logger.log(
+      `Password reset requested with token: ${token.substring(0, 8)}...`,
+    );
+    throw new NotFoundException(
+      'Password reset flow not fully implemented yet',
+    );
   }
 
   async validateSession(token: string): Promise<SessionDocument | null> {
@@ -161,7 +189,10 @@ export class AuthService {
     return `${salt}:${derivedKey.toString('hex')}`;
   }
 
-  private async verifyPassword(password: string, stored: string): Promise<boolean> {
+  private async verifyPassword(
+    password: string,
+    stored: string,
+  ): Promise<boolean> {
     const [salt, hash] = stored.split(':');
     const derivedKey = (await scryptAsync(password, salt, 64)) as Buffer;
     const storedKey = Buffer.from(hash, 'hex');

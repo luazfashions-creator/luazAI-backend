@@ -26,7 +26,11 @@ export class AgentMemoryService {
     });
   }
 
-  async setShortTerm(taskId: string, data: Record<string, any>, ttlSeconds?: number): Promise<void> {
+  async setShortTerm(
+    taskId: string,
+    data: Record<string, any>,
+    ttlSeconds?: number,
+  ): Promise<void> {
     const key = `${SHORT_TERM_PREFIX}${taskId}`;
     const value = JSON.stringify(data);
     if (ttlSeconds) {
@@ -39,14 +43,17 @@ export class AgentMemoryService {
   async getShortTerm(taskId: string): Promise<Record<string, any> | null> {
     const key = `${SHORT_TERM_PREFIX}${taskId}`;
     const data = await this.redis.get(key);
-    return data ? JSON.parse(data) : null;
+    return data ? (JSON.parse(data) as Record<string, any>) : null;
   }
 
   async clearShortTerm(taskId: string): Promise<void> {
     await this.redis.del(`${SHORT_TERM_PREFIX}${taskId}`);
   }
 
-  async saveLongTerm(taskId: string, result: Record<string, any>): Promise<void> {
+  async saveLongTerm(
+    taskId: string,
+    result: Record<string, any>,
+  ): Promise<void> {
     await this.taskModel.findByIdAndUpdate(taskId, {
       $set: { result },
     });
@@ -57,7 +64,11 @@ export class AgentMemoryService {
     return task?.result ?? null;
   }
 
-  async getPastResults(brandId: string, agentType: string, limit = 5): Promise<Record<string, any>[]> {
+  async getPastResults(
+    brandId: string,
+    agentType: string,
+    limit = 5,
+  ): Promise<Record<string, any>[]> {
     const tasks = await this.taskModel
       .find({
         brandId: new Types.ObjectId(brandId),

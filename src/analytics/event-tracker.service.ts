@@ -1,7 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { AnalyticsEvent, AnalyticsEventDocument } from './schemas/analytics-event.schema';
+import {
+  AnalyticsEvent,
+  AnalyticsEventDocument,
+} from './schemas/analytics-event.schema';
 import { TrackEventDto } from './dto/track-event.dto';
 
 @Injectable()
@@ -14,11 +17,15 @@ export class EventTrackerService {
   ) {}
 
   async track(dto: TrackEventDto): Promise<AnalyticsEventDocument> {
-    this.logger.debug(`Tracking event: ${dto.eventType} for brand ${dto.brandId}`);
+    this.logger.debug(
+      `Tracking event: ${dto.eventType} for brand ${dto.brandId}`,
+    );
 
     return this.eventModel.create({
       brandId: new Types.ObjectId(dto.brandId),
-      campaignId: dto.campaignId ? new Types.ObjectId(dto.campaignId) : undefined,
+      campaignId: dto.campaignId
+        ? new Types.ObjectId(dto.campaignId)
+        : undefined,
       eventType: dto.eventType,
       source: dto.source,
       channel: dto.channel,
@@ -35,7 +42,9 @@ export class EventTrackerService {
   async trackBatch(events: TrackEventDto[]): Promise<number> {
     const docs = events.map((dto) => ({
       brandId: new Types.ObjectId(dto.brandId),
-      campaignId: dto.campaignId ? new Types.ObjectId(dto.campaignId) : undefined,
+      campaignId: dto.campaignId
+        ? new Types.ObjectId(dto.campaignId)
+        : undefined,
       eventType: dto.eventType,
       source: dto.source,
       channel: dto.channel,

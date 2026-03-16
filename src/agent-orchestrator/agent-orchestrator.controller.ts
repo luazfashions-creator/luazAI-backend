@@ -8,7 +8,12 @@ import {
   UseGuards,
   BadRequestException,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { WorkflowEngineService } from './workflow-engine.service';
 import { AgentStateService } from './agent-state.service';
 import { TriggerWorkflowDto } from './dto/trigger-workflow.dto';
@@ -21,6 +26,7 @@ import {
   SEO_ANALYSIS_WORKFLOW,
   CONTENT_GENERATION_WORKFLOW,
 } from './workflows/workflow-definitions';
+import { WorkflowDefinition } from './workflow-engine.service';
 
 @ApiTags('Agents')
 @ApiBearerAuth()
@@ -37,7 +43,7 @@ export class AgentOrchestratorController {
   @Post('workflows')
   @ApiOperation({ summary: 'Trigger a workflow' })
   async triggerWorkflow(@Body() dto: TriggerWorkflowDto) {
-    const definitions: Record<string, any> = {
+    const definitions: Record<string, WorkflowDefinition> = {
       'seo-analysis': SEO_ANALYSIS_WORKFLOW,
       'content-generation': CONTENT_GENERATION_WORKFLOW,
     };
@@ -80,11 +86,7 @@ export class AgentOrchestratorController {
     if (brandId) filter.brandId = new Types.ObjectId(brandId);
     if (status) filter.status = status;
 
-    return this.taskModel
-      .find(filter)
-      .sort({ createdAt: -1 })
-      .limit(50)
-      .exec();
+    return this.taskModel.find(filter).sort({ createdAt: -1 }).limit(50).exec();
   }
 
   @Get('tasks/:id')
@@ -103,7 +105,11 @@ export class AgentOrchestratorController {
       throw new BadRequestException(`Task ${id} not found`);
     }
 
-    await this.stateService.transition(id, AgentStatus.CANCELLED, 'Cancelled by user');
+    await this.stateService.transition(
+      id,
+      AgentStatus.CANCELLED,
+      'Cancelled by user',
+    );
     task.status = AgentStatus.CANCELLED;
     task.completedAt = new Date();
     await task.save();

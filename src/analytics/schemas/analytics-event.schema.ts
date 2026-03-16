@@ -51,7 +51,8 @@ export class AnalyticsEvent {
   timestamp: Date;
 }
 
-export const AnalyticsEventSchema = SchemaFactory.createForClass(AnalyticsEvent);
+export const AnalyticsEventSchema =
+  SchemaFactory.createForClass(AnalyticsEvent);
 
 AnalyticsEventSchema.index({ brandId: 1, eventType: 1, timestamp: -1 });
 AnalyticsEventSchema.index({ source: 1 });

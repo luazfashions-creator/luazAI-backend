@@ -25,7 +25,11 @@ describe('SeoScoringService', () => {
       title: 'Best SEO Tools for 2024',
       metaDescription:
         'Discover the best SEO tools for 2024. Compare features, pricing, and get expert recommendations for your SEO strategy.',
-      headings: { h1: ['Best SEO Tools for 2024'], h2: ['Top Tools', 'Pricing'], h3: [] },
+      headings: {
+        h1: ['Best SEO Tools for 2024'],
+        h2: ['Top Tools', 'Pricing'],
+        h3: [],
+      },
       bodyText: 'SEO tools '.repeat(300), // 600 words
       targetKeywords: ['seo tools'],
       internalLinks: 8,
@@ -74,8 +78,6 @@ describe('SeoScoringService', () => {
 
   it('should generate recommendations for low scores', () => {
     const result = service.score({});
-    expect(result.recommendations).toContain(
-      'Add schema markup (JSON-LD)',
-    );
+    expect(result.recommendations).toContain('Add schema markup (JSON-LD)');
   });
 });

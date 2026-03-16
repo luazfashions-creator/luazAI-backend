@@ -4,7 +4,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Job } from 'bullmq';
 import { ContentGeneratorService } from './content-generator.service';
-import { ContentAsset, ContentAssetDocument } from './schemas/content-asset.schema';
+import {
+  ContentAsset,
+  ContentAssetDocument,
+} from './schemas/content-asset.schema';
 import { QueueName } from '../shared/constants/queues.constant';
 
 @Processor(QueueName.CONTENT_GENERATION)
@@ -22,7 +25,17 @@ export class ContentGenerationProcessor extends WorkerHost {
   async process(job: Job): Promise<void> {
     this.logger.log(`Processing content generation job ${job.id}`);
 
-    const { brandId, type, brief } = job.data;
+    const { brandId, type, brief } = job.data as {
+      brandId: string;
+      type: string;
+      brief: {
+        topic: string;
+        keywords: string[];
+        tone: string;
+        wordCount: number;
+        targetAudience: string;
+      };
+    };
 
     await job.updateProgress(10);
 

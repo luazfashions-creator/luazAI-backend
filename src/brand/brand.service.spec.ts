@@ -10,7 +10,6 @@ import { BrandRepository } from './brand.repository';
 
 describe('BrandService', () => {
   let service: BrandService;
-  let repo: BrandRepository;
 
   const mockRepo = {
     create: jest.fn(),
@@ -42,7 +41,6 @@ describe('BrandService', () => {
     }).compile();
 
     service = module.get<BrandService>(BrandService);
-    repo = module.get<BrandRepository>(BrandRepository);
 
     jest.clearAllMocks();
   });
@@ -57,10 +55,7 @@ describe('BrandService', () => {
         ownerId: 'user-1',
       });
 
-      const result = await service.create(
-        { name: 'Test Brand' },
-        'user-1',
-      );
+      const result = await service.create({ name: 'Test Brand' }, 'user-1');
 
       expect(result.slug).toBe('test-brand');
       expect(mockRepo.create).toHaveBeenCalledWith(

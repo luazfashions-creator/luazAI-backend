@@ -29,7 +29,9 @@ export class BrandRepository {
     order: 'asc' | 'desc',
   ): Promise<{ data: BrandDocument[]; total: number }> {
     const filter = { ownerId: new Types.ObjectId(ownerId) };
-    const sortObj: Record<string, 1 | -1> = { [sort]: order === 'asc' ? 1 : -1 };
+    const sortObj: Record<string, 1 | -1> = {
+      [sort]: order === 'asc' ? 1 : -1,
+    };
 
     const [data, total] = await Promise.all([
       this.brandModel
@@ -43,7 +45,10 @@ export class BrandRepository {
     return { data, total };
   }
 
-  async update(id: string, data: Partial<Brand>): Promise<BrandDocument | null> {
+  async update(
+    id: string,
+    data: Partial<Brand>,
+  ): Promise<BrandDocument | null> {
     return this.brandModel.findByIdAndUpdate(id, data, { new: true });
   }
 

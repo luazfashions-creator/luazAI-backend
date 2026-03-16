@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
 declare namespace Express {
   interface Request {
     user?: {

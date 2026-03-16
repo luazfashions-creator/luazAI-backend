@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import * as bodyParser from 'body-parser';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -11,7 +12,10 @@ async function bootstrap() {
 
   const config = app.get(ConfigService);
   const port = config.get<number>('app.port', 3000);
-  const frontendUrl = config.get<string>('app.frontendUrl', 'http://localhost:3001');
+  const frontendUrl = config.get<string>(
+    'app.frontendUrl',
+    'http://localhost:3001',
+  );
 
   // Security
   app.use(helmet());
@@ -22,7 +26,9 @@ async function bootstrap() {
   });
 
   // Global prefix
-  app.setGlobalPrefix('api', { exclude: ['health', 'health/ready', 'metrics'] });
+  app.setGlobalPrefix('api', {
+    exclude: ['health', 'health/ready', 'metrics'],
+  });
 
   // Validation
   app.useGlobalPipes(
@@ -35,8 +41,6 @@ async function bootstrap() {
   );
 
   // Body size limit
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const bodyParser = require('body-parser');
   app.use(bodyParser.json({ limit: '10mb' }));
   app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
@@ -54,4 +58,4 @@ async function bootstrap() {
   console.log(`🚀 LuazAI API running on http://localhost:${port}`);
   console.log(`📚 Swagger docs at http://localhost:${port}/api/docs`);
 }
-bootstrap();
+void bootstrap();

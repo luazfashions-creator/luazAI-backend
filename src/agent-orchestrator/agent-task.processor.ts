@@ -18,11 +18,11 @@ import { ContentAgent } from './agents/content.agent';
 import { AnalyticsAgent } from './agents/analytics.agent';
 
 const AGENT_MAP: Record<string, new (...args: any[]) => BaseAgent> = {
-  'brand-profiler': BrandProfilerAgent as any,
-  'competitor-analysis': CompetitorAnalysisAgent as any,
-  'seo': SeoAgent as any,
-  'content': ContentAgent as any,
-  'analytics': AnalyticsAgent as any,
+  'brand-profiler': BrandProfilerAgent,
+  'competitor-analysis': CompetitorAnalysisAgent,
+  seo: SeoAgent,
+  content: ContentAgent,
+  analytics: AnalyticsAgent,
 };
 
 @Processor(QueueName.AI_TASKS)
@@ -41,7 +41,7 @@ export class AgentTaskProcessor extends WorkerHost {
   }
 
   async process(job: Job): Promise<void> {
-    const { taskId } = job.data;
+    const { taskId } = job.data as { taskId: string };
     this.logger.log(`Processing agent task ${taskId}`);
 
     const task = await this.taskModel.findById(taskId);
@@ -75,7 +75,10 @@ export class AgentTaskProcessor extends WorkerHost {
     };
 
     // Transition to RUNNING
-    await this.stateService.transition(task._id.toString(), AgentStatus.RUNNING);
+    await this.stateService.transition(
+      task._id.toString(),
+      AgentStatus.RUNNING,
+    );
     task.status = AgentStatus.RUNNING;
     task.startedAt = new Date();
     await task.save();
@@ -100,9 +103,10 @@ export class AgentTaskProcessor extends WorkerHost {
       } else {
         throw new Error(result.error || 'Agent execution returned failure');
       }
-    } catch (error: any) {
-      await agent.onFail(context, error);
-      await this.failTask(task, error.message);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      await agent.onFail(context, err);
+      await this.failTask(task, err.message);
     }
   }
 

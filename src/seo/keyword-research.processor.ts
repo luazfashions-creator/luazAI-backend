@@ -8,9 +8,7 @@ import { QueueName } from '../shared/constants/queues.constant';
 export class KeywordResearchProcessor extends WorkerHost {
   private readonly logger = new Logger(KeywordResearchProcessor.name);
 
-  constructor(
-    private readonly keywordResearchService: KeywordResearchService,
-  ) {
+  constructor(private readonly keywordResearchService: KeywordResearchService) {
     super();
   }
 
@@ -25,8 +23,14 @@ export class KeywordResearchProcessor extends WorkerHost {
     }
   }
 
-  private async handleKeywordResearch(job: Job): Promise<any> {
-    const { brandId, seedKeywords, country, language, limit } = job.data;
+  private async handleKeywordResearch(job: Job) {
+    const { brandId, seedKeywords, country, language, limit } = job.data as {
+      brandId: string;
+      seedKeywords: string[];
+      country: string;
+      language: string;
+      limit: number;
+    };
 
     const results = await this.keywordResearchService.research(
       brandId,

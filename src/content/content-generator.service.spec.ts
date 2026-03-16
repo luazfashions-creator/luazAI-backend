@@ -34,8 +34,8 @@ describe('ContentGeneratorService', () => {
         {
           provide: ConfigService,
           useValue: {
-            get: jest.fn((key: string, defaultValue?: any) => {
-              const config: Record<string, any> = {
+            get: jest.fn((key: string, defaultValue?: unknown) => {
+              const config: Record<string, unknown> = {
                 'ai.gemini.model': 'gemini-2.0-flash',
                 'ai.gemini.apiKey': 'test-key',
                 'ai.gemini.maxTokens': 8192,
@@ -59,13 +59,11 @@ describe('ContentGeneratorService', () => {
   it('should load brand context when generating content', async () => {
     // We test that the service calls brandService.findOne with the right ID.
     // The actual AI call would fail without a real API key, so we mock the model.
-    const generateSpy = jest
-      .spyOn(service as any, 'model')
-      .mockReturnValue({
-        invoke: jest.fn().mockResolvedValue({
-          content: 'Generated blog post content about SEO tips.',
-        }),
-      });
+    const generateSpy = jest.spyOn(service as any, 'model').mockReturnValue({
+      invoke: jest.fn().mockResolvedValue({
+        content: 'Generated blog post content about SEO tips.',
+      }),
+    });
 
     // Since we can't easily mock the LangChain model via DI, we verify the brand loading part
     try {
@@ -81,13 +79,17 @@ describe('ContentGeneratorService', () => {
       // Expected to fail without real API key — that's fine for this test
     }
 
-    expect(brandService.findById).toHaveBeenCalledWith('507f1f77bcf86cd799439011');
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    expect(brandService.findById).toHaveBeenCalledWith(
+      '507f1f77bcf86cd799439011',
+    );
     generateSpy.mockRestore();
   });
 
   it('should throw when circuit breaker is open', async () => {
     // Force circuit breaker open
-    (service as any).circuitOpenUntil = Date.now() + 60_000;
+    (service as unknown as { circuitOpenUntil: number }).circuitOpenUntil =
+      Date.now() + 60_000;
 
     await expect(
       service.generate({
@@ -100,8 +102,11 @@ describe('ContentGeneratorService', () => {
 
   it('should reset circuit breaker after timeout elapses', async () => {
     // Set circuit breaker to expired
-    (service as any).circuitOpenUntil = Date.now() - 1000;
-    (service as any).consecutiveFailures = 10;
+    (service as unknown as { circuitOpenUntil: number }).circuitOpenUntil =
+      Date.now() - 1000;
+    (
+      service as unknown as { consecutiveFailures: number }
+    ).consecutiveFailures = 10;
 
     // The circuit breaker check should pass (half-open), then it will try to call the AI
     try {
@@ -114,7 +119,12 @@ describe('ContentGeneratorService', () => {
       // Will fail due to no real API key, but circuit breaker should have reset
     }
 
-    expect((service as any).circuitOpenUntil).toBe(0);
-    expect((service as any).consecutiveFailures).toBeLessThanOrEqual(1);
+    expect(
+      (service as unknown as { circuitOpenUntil: number }).circuitOpenUntil,
+    ).toBe(0);
+    expect(
+      (service as unknown as { consecutiveFailures: number })
+        .consecutiveFailures,
+    ).toBeLessThanOrEqual(1);
   });
 });

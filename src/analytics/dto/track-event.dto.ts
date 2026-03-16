@@ -1,4 +1,11 @@
-import { IsMongoId, IsNotEmpty, IsString, IsNumber, IsOptional, IsObject } from 'class-validator';
+import {
+  IsMongoId,
+  IsNotEmpty,
+  IsString,
+  IsNumber,
+  IsOptional,
+  IsObject,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class TrackEventDto {

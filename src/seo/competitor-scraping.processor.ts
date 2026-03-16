@@ -29,8 +29,12 @@ export class CompetitorScrapingProcessor extends WorkerHost {
     }
   }
 
-  private async handleScrape(job: Job): Promise<any> {
-    const { brandId, competitorName, competitorWebsite } = job.data;
+  private async handleScrape(job: Job) {
+    const { brandId, competitorName, competitorWebsite } = job.data as {
+      brandId: string;
+      competitorName: string;
+      competitorWebsite: string;
+    };
 
     try {
       const response = await fetch(competitorWebsite, {
@@ -67,7 +71,10 @@ export class CompetitorScrapingProcessor extends WorkerHost {
 
       // Extract keywords from meta tags
       const metaKeywords =
-        $('meta[name="keywords"]').attr('content')?.split(',').map((k) => k.trim()) || [];
+        $('meta[name="keywords"]')
+          .attr('content')
+          ?.split(',')
+          .map((k) => k.trim()) || [];
 
       await this.competitorModel.findOneAndUpdate(
         {

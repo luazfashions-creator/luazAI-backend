@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { BrandService } from '../brand/brand.service';
+import { BrandDocument } from '../brand/schemas/brand.schema';
 import { ContentType } from '../shared/enums/content-type.enum';
 
 export interface ContentGenerationInput {
@@ -47,7 +48,9 @@ export class ContentGeneratorService {
     });
   }
 
-  async generate(input: ContentGenerationInput): Promise<ContentGenerationResult> {
+  async generate(
+    input: ContentGenerationInput,
+  ): Promise<ContentGenerationResult> {
     this.checkCircuitBreaker();
 
     const brand = await this.brandService.findById(input.brandId);
@@ -63,9 +66,10 @@ export class ContentGeneratorService {
 
       this.consecutiveFailures = 0;
 
-      const content = typeof response.content === 'string'
-        ? response.content
-        : JSON.stringify(response.content);
+      const content =
+        typeof response.content === 'string'
+          ? response.content
+          : JSON.stringify(response.content);
 
       const wordCount = content.split(/\s+/).filter(Boolean).length;
 
@@ -85,7 +89,9 @@ export class ContentGeneratorService {
       this.consecutiveFailures++;
       if (this.consecutiveFailures >= 10) {
         this.circuitOpenUntil = Date.now() + 60_000;
-        this.logger.error('Circuit breaker opened — too many consecutive AI failures');
+        this.logger.error(
+          'Circuit breaker opened — too many consecutive AI failures',
+        );
       }
       throw error;
     }
@@ -102,7 +108,7 @@ export class ContentGeneratorService {
     }
   }
 
-  private buildBrandContext(brand: any): string {
+  private buildBrandContext(brand: BrandDocument): string {
     const parts: string[] = [
       `Brand: ${brand.name}`,
       `Industry: ${brand.industry || 'General'}`,
@@ -126,12 +132,18 @@ export class ContentGeneratorService {
 
   private buildSystemPrompt(type: ContentType, brandContext: string): string {
     const typeInstructions: Record<ContentType, string> = {
-      [ContentType.BLOG_POST]: 'Write a well-structured blog post with an engaging introduction, clear headings, and a compelling conclusion. Include SEO-optimized headings.',
-      [ContentType.AD_COPY]: 'Write concise, high-converting ad copy. Include a headline, description, and call-to-action. Keep it punchy and persuasive.',
-      [ContentType.SOCIAL_POST]: 'Write an engaging social media post. Keep it concise, include relevant hashtags, and add a call-to-action.',
-      [ContentType.EMAIL]: 'Write a professional email with a compelling subject line, clear body, and strong call-to-action.',
-      [ContentType.LANDING_PAGE]: 'Write landing page copy with a hero headline, value propositions, benefits list, social proof section, and strong CTA.',
-      [ContentType.PRODUCT_DESCRIPTION]: 'Write a compelling product description highlighting features, benefits, and unique selling points.',
+      [ContentType.BLOG_POST]:
+        'Write a well-structured blog post with an engaging introduction, clear headings, and a compelling conclusion. Include SEO-optimized headings.',
+      [ContentType.AD_COPY]:
+        'Write concise, high-converting ad copy. Include a headline, description, and call-to-action. Keep it punchy and persuasive.',
+      [ContentType.SOCIAL_POST]:
+        'Write an engaging social media post. Keep it concise, include relevant hashtags, and add a call-to-action.',
+      [ContentType.EMAIL]:
+        'Write a professional email with a compelling subject line, clear body, and strong call-to-action.',
+      [ContentType.LANDING_PAGE]:
+        'Write landing page copy with a hero headline, value propositions, benefits list, social proof section, and strong CTA.',
+      [ContentType.PRODUCT_DESCRIPTION]:
+        'Write a compelling product description highlighting features, benefits, and unique selling points.',
     };
 
     return `You are an expert content writer. Generate high-quality content aligned with the brand guidelines below.
@@ -148,7 +160,9 @@ Write naturally, following the brand's tone and avoiding any words/phrases liste
     const parts: string[] = [`Topic: ${input.topic}`];
 
     if (input.keywords?.length) {
-      parts.push(`Target keywords (weave naturally): ${input.keywords.join(', ')}`);
+      parts.push(
+        `Target keywords (weave naturally): ${input.keywords.join(', ')}`,
+      );
     }
     if (input.targetAudience) {
       parts.push(`Target audience: ${input.targetAudience}`);

@@ -8,8 +8,8 @@ import { Session } from './schemas/session.schema';
 
 describe('AuthService', () => {
   let service: AuthService;
-  let userModel: any;
-  let sessionModel: any;
+  let userModel: typeof mockUserModel;
+  let sessionModel: typeof mockSessionModel;
 
   const mockUserModel = {
     findOne: jest.fn(),

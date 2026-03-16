@@ -37,7 +37,9 @@ export class WorkflowEngineService {
     globalInput: Record<string, any> = {},
   ): Promise<{ workflowId: string; tasks: AgentTaskDocument[] }> {
     const workflowId = new Types.ObjectId();
-    this.logger.log(`Starting workflow "${definition.name}" (${workflowId})`);
+    this.logger.log(
+      `Starting workflow "${definition.name}" (${workflowId.toString()})`,
+    );
 
     const tasks: AgentTaskDocument[] = [];
 
@@ -45,7 +47,7 @@ export class WorkflowEngineService {
     for (let i = 0; i < definition.steps.length; i++) {
       const step = definition.steps[i];
       const dependsOn = (step.dependsOnIndex || []).map(
-        (idx) => tasks[idx]._id as Types.ObjectId,
+        (idx) => tasks[idx]._id,
       );
 
       const task = await this.taskModel.create({
@@ -113,7 +115,9 @@ export class WorkflowEngineService {
 
     if (statuses.every((s) => s === AgentStatus.COMPLETED)) {
       overallStatus = 'completed';
-    } else if (statuses.some((s) => s === AgentStatus.FAILED || s === AgentStatus.DEAD)) {
+    } else if (
+      statuses.some((s) => s === AgentStatus.FAILED || s === AgentStatus.DEAD)
+    ) {
       overallStatus = 'failed';
     } else if (statuses.some((s) => s === AgentStatus.RUNNING)) {
       overallStatus = 'running';
@@ -155,6 +159,6 @@ export class WorkflowEngineService {
       },
     );
 
-    this.logger.log(`Task ${task._id} (${task.agentType}) enqueued`);
+    this.logger.log(`Task ${task._id.toString()} (${task.agentType}) enqueued`);
   }
 }

@@ -15,7 +15,11 @@ export class AnalyticsPipelineProcessor extends WorkerHost {
   async process(job: Job): Promise<void> {
     this.logger.log(`Processing analytics pipeline job ${job.id}`);
 
-    const { brandId, period, reportType } = job.data;
+    const { brandId, period, reportType } = job.data as {
+      brandId: string;
+      period?: string;
+      reportType?: string;
+    };
 
     switch (reportType) {
       case 'overview':

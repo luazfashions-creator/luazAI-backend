@@ -31,7 +31,7 @@ export class AuthGuard implements CanActivate {
         throw new UnauthorizedException('Invalid or expired token');
       }
 
-      const session = await response.json();
+      const session = (await response.json()) as { user: Request['user'] };
       request['user'] = session.user;
       return true;
     } catch (error) {
@@ -48,6 +48,8 @@ export class AuthGuard implements CanActivate {
     }
 
     // Check cookies
-    return request.cookies?.['session_token'];
+    return (request.cookies as Record<string, string> | undefined)?.[
+      'session_token'
+    ];
   }
 }

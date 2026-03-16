@@ -5,6 +5,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { Request } from 'express';
 import { Role } from '../constants/roles.constant';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 
@@ -22,14 +23,16 @@ export class RolesGuard implements CanActivate {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<Request>();
     const user = request.user;
 
     if (!user) {
       throw new ForbiddenException('No user found in request');
     }
 
-    const hasRole = requiredRoles.some((role) => user.role === role);
+    const hasRole = requiredRoles.some(
+      (role) => user.role === (role as string),
+    );
     if (!hasRole) {
       throw new ForbiddenException(
         `Requires one of roles: ${requiredRoles.join(', ')}`,

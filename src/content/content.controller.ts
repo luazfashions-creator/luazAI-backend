@@ -11,7 +11,12 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { ContentService } from './content.service';
 import { GenerateContentDto } from './dto/generate-content.dto';
 import { AuthGuard } from '../shared/guards/auth.guard';
@@ -43,7 +48,7 @@ export class ContentController {
 
   @Get('templates')
   @ApiOperation({ summary: 'List available content templates' })
-  async getTemplates() {
+  getTemplates() {
     return this.contentService.getTemplates();
   }
 

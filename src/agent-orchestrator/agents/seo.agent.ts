@@ -15,14 +15,16 @@ export class SeoAgent extends BaseAgent {
   async execute(context: AgentExecutionContext): Promise<AgentResult> {
     const { brandId, input } = context;
 
-    await context.memory.setShortTerm(context.taskId, { phase: 'keyword-research' });
+    await context.memory.setShortTerm(context.taskId, {
+      phase: 'keyword-research',
+    });
 
     const keywordJob = await this.seoService.triggerKeywordResearch(
       brandId,
-      input.seedKeywords || [],
-      input.country || 'US',
-      input.language || 'en',
-      input.limit || 50,
+      (input.seedKeywords as string[]) || [],
+      (input.country as string) || 'US',
+      (input.language as string) || 'en',
+      (input.limit as number) || 50,
     );
 
     await context.memory.setShortTerm(context.taskId, { phase: 'scoring' });

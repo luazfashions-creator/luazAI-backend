@@ -3,7 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Model, Types } from 'mongoose';
 import { Queue } from 'bullmq';
-import { ContentAsset, ContentAssetDocument } from './schemas/content-asset.schema';
+import {
+  ContentAsset,
+  ContentAssetDocument,
+} from './schemas/content-asset.schema';
 import { ContentGeneratorService } from './content-generator.service';
 import { TemplateService } from './template.service';
 import { GenerateContentDto } from './dto/generate-content.dto';
@@ -32,7 +35,12 @@ export class ContentService {
   }
 
   async listAssets(brandId: string, pagination: PaginationDto) {
-    const { page = 1, limit = 20, sort = 'createdAt', order = 'desc' } = pagination;
+    const {
+      page = 1,
+      limit = 20,
+      sort = 'createdAt',
+      order = 'desc',
+    } = pagination;
     const skip = (page - 1) * limit;
 
     const [data, total] = await Promise.all([
@@ -61,7 +69,10 @@ export class ContentService {
     return asset;
   }
 
-  async updateAsset(id: string, updateData: Record<string, any>): Promise<ContentAssetDocument> {
+  async updateAsset(
+    id: string,
+    updateData: Record<string, any>,
+  ): Promise<ContentAssetDocument> {
     const asset = await this.contentAssetModel
       .findByIdAndUpdate(id, { $set: updateData }, { new: true })
       .exec();

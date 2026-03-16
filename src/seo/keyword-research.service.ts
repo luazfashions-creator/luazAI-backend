@@ -55,15 +55,26 @@ Generate ${limit} related SEO keyword suggestions with metrics.`;
       new HumanMessage(userPrompt),
     ]);
 
-    const content = typeof response.content === 'string'
-      ? response.content
-      : JSON.stringify(response.content);
+    const content =
+      typeof response.content === 'string'
+        ? response.content
+        : JSON.stringify(response.content);
 
-    let keywords: any[];
+    let keywords: {
+      keyword: string;
+      searchVolume: number;
+      difficulty: number;
+      cpc: number;
+      intent: string;
+      trend: string;
+    }[];
     try {
       // Strip any markdown code blocks if present
-      const cleaned = content.replace(/```json?\n?/g, '').replace(/```/g, '').trim();
-      keywords = JSON.parse(cleaned);
+      const cleaned = content
+        .replace(/```json?\n?/g, '')
+        .replace(/```/g, '')
+        .trim();
+      keywords = JSON.parse(cleaned) as typeof keywords;
     } catch {
       this.logger.error('Failed to parse AI keyword response');
       keywords = [];
@@ -72,8 +83,7 @@ Generate ${limit} related SEO keyword suggestions with metrics.`;
     // Store keywords in DB
     const results: SeoKeywordDocument[] = [];
     for (const kw of keywords) {
-      const opportunityScore =
-        (kw.searchVolume * (100 - kw.difficulty)) / 100;
+      const opportunityScore = (kw.searchVolume * (100 - kw.difficulty)) / 100;
 
       const doc = await this.keywordModel.findOneAndUpdate(
         { brandId: new Types.ObjectId(brandId), keyword: kw.keyword },

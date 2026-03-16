@@ -1,8 +1,17 @@
-import { IsMongoId, IsNotEmpty, IsString, IsOptional, IsObject } from 'class-validator';
+import {
+  IsMongoId,
+  IsNotEmpty,
+  IsString,
+  IsOptional,
+  IsObject,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class TriggerWorkflowDto {
-  @ApiProperty({ example: 'seo-analysis', description: 'Workflow name: seo-analysis | content-generation' })
+  @ApiProperty({
+    example: 'seo-analysis',
+    description: 'Workflow name: seo-analysis | content-generation',
+  })
   @IsNotEmpty()
   @IsString()
   workflow: string;

@@ -6,7 +6,10 @@ import { ContentService } from './content.service';
 import { ContentGeneratorService } from './content-generator.service';
 import { TemplateService } from './template.service';
 import { ContentGenerationProcessor } from './content-generation.processor';
-import { ContentAsset, ContentAssetSchema } from './schemas/content-asset.schema';
+import {
+  ContentAsset,
+  ContentAssetSchema,
+} from './schemas/content-asset.schema';
 import { BrandModule } from '../brand/brand.module';
 import { QueueName } from '../shared/constants/queues.constant';
 
