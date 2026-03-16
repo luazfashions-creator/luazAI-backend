@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: luazai-config
+data:
+  NODE_ENV: production
+  PORT: '3000'
+  FRONTEND_URL: https://app.luazai.com
+  REDIS_HOST: redis-service
+  REDIS_PORT: '6379'
+  GEMINI_MODEL: gemini-2.0-flash
+  GEMINI_MAX_TOKENS: '8192'
+  GEMINI_TEMPERATURE: '0.7'
+  GEMINI_RATE_LIMIT_RPM: '60'
+  QUEUE_DEFAULT_ATTEMPTS: '3'
+  QUEUE_DEFAULT_BACKOFF: '5000'
