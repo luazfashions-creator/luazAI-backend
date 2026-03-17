@@ -26,8 +26,8 @@ import { QueueName } from '../shared/constants/queues.constant';
     ]),
     BullModule.registerQueue({ name: QueueName.AI_TASKS }),
     forwardRef(() => BrandModule),
-    SeoModule,
-    ContentModule,
+    forwardRef(() => SeoModule),
+    forwardRef(() => ContentModule),
   ],
   controllers: [AgentOrchestratorController],
   providers: [

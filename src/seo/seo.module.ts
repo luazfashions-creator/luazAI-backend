@@ -36,6 +36,6 @@ import { QueueName } from '../shared/constants/queues.constant';
     KeywordResearchProcessor,
     CompetitorScrapingProcessor,
   ],
-  exports: [SeoService, KeywordResearchService, SeoScoringService],
+  exports: [SeoService, KeywordResearchService, SeoScoringService, CompetitorAnalysisService],
 })
 export class SeoModule {}
