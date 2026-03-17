@@ -42,7 +42,7 @@ export class ContentAsset {
   @Prop({ type: Types.ObjectId, index: true })
   campaignId?: Types.ObjectId;
 
-  @Prop({ required: true, enum: ContentType })
+  @Prop({ type: String, required: true, enum: ContentType })
   type: ContentType;
 
   @Prop({ required: true })

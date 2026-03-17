@@ -8,6 +8,17 @@ import { ConfigService } from '@nestjs/config';
 import { BrandService } from './brand.service';
 import { BrandRepository } from './brand.repository';
 
+// Mock ioredis to prevent real Redis connections in tests
+jest.mock('ioredis', () => {
+  return jest.fn().mockImplementation(() => ({
+    get: jest.fn().mockResolvedValue(null),
+    setex: jest.fn().mockResolvedValue('OK'),
+    del: jest.fn().mockResolvedValue(1),
+    ping: jest.fn().mockResolvedValue('PONG'),
+    quit: jest.fn().mockResolvedValue('OK'),
+  }));
+});
+
 describe('BrandService', () => {
   let service: BrandService;
 

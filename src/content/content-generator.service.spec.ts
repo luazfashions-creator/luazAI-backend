@@ -57,13 +57,14 @@ describe('ContentGeneratorService', () => {
   });
 
   it('should load brand context when generating content', async () => {
-    // We test that the service calls brandService.findOne with the right ID.
+    // We test that the service calls brandService.findById with the right ID.
     // The actual AI call would fail without a real API key, so we mock the model.
-    const generateSpy = jest.spyOn(service as any, 'model').mockReturnValue({
+    const mockModel = {
       invoke: jest.fn().mockResolvedValue({
         content: 'Generated blog post content about SEO tips.',
       }),
-    });
+    };
+    (service as unknown as { model: typeof mockModel }).model = mockModel;
 
     // Since we can't easily mock the LangChain model via DI, we verify the brand loading part
     try {
@@ -83,7 +84,6 @@ describe('ContentGeneratorService', () => {
     expect(brandService.findById).toHaveBeenCalledWith(
       '507f1f77bcf86cd799439011',
     );
-    generateSpy.mockRestore();
   });
 
   it('should throw when circuit breaker is open', async () => {

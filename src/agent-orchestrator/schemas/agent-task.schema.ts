@@ -43,6 +43,7 @@ export class AgentTask {
   dependsOn: Types.ObjectId[];
 
   @Prop({
+    type: String,
     required: true,
     enum: AgentStatus,
     default: AgentStatus.PENDING,

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BullModule } from '@nestjs/bullmq';
 import { ContentController } from './content.controller';
@@ -19,7 +19,7 @@ import { QueueName } from '../shared/constants/queues.constant';
       { name: ContentAsset.name, schema: ContentAssetSchema },
     ]),
     BullModule.registerQueue({ name: QueueName.CONTENT_GENERATION }),
-    BrandModule,
+    forwardRef(() => BrandModule),
   ],
   controllers: [ContentController],
   providers: [

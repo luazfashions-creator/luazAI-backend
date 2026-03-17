@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BullModule } from '@nestjs/bullmq';
 import { SeoController } from './seo.controller';
@@ -25,7 +25,7 @@ import { QueueName } from '../shared/constants/queues.constant';
       { name: QueueName.SEO_PIPELINE },
       { name: QueueName.SCRAPING },
     ),
-    BrandModule,
+    forwardRef(() => BrandModule),
   ],
   controllers: [SeoController],
   providers: [
